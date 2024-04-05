@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Net.Http.Json;
+using JamieBot;
 
 public class Program {
 
@@ -47,12 +48,12 @@ public class Program {
             config.ReadyTimeout = TimeSpan.FromSeconds(10);
             config.Passphrase = passphrase;
         });
-        builder.Services.AddLogging(x => x.AddConsole().SetMinimumLevel(LogLevel.Trace));
-        builder.Services.AddHttpClient(string.Empty).AddLogger<HttpLogger>();
-        builder.Services.AddSingleton<HttpLogger>();
+        builder.Services.AddLogging(x => x.AddConsole().SetMinimumLevel(LogLevel.Information));
+        //builder.Services.AddHttpClient(string.Empty).AddLogger<HttpLogger>();
+        //builder.Services.AddSingleton<HttpLogger>();
 
 
-        builder.Services.Replace(ServiceDescriptor.Singleton<IHostLifetime, EmptyLifetime>());
+        //builder.Services.Replace(ServiceDescriptor.Singleton<IHostLifetime, EmptyLifetime>());
 
         //Adding modules
         builder.Services.AddSingleton<MusicModule>();
@@ -61,6 +62,7 @@ public class Program {
         var app = builder.Build();
 
         var musicModule = app.Services.GetRequiredService<MusicModule>();
+        //var ConfigCommandsModule = app.Services.GetRequiredService<ConfigCommandsModule>();
         app.Services.GetRequiredService<IAudioService>().TrackStarted += musicModule.TrackStarted;
         app.Services.GetRequiredService<IAudioService>().TrackEnded += musicModule.TrackEnded;
 
@@ -68,11 +70,13 @@ public class Program {
     }
 }
 
+/*
 file sealed class EmptyLifetime : IHostLifetime {
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
     public Task WaitForStartAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 }
+
 
 file sealed class HttpLogger : IHttpClientAsyncLogger {
     public void LogRequestFailed(object? context, HttpRequestMessage request, HttpResponseMessage? response, Exception exception, TimeSpan elapsed) {
@@ -110,3 +114,4 @@ file sealed class HttpLogger : IHttpClientAsyncLogger {
         return default;
     }
 }
+*/
