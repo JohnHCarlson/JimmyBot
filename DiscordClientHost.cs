@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
+using Discord.Rest;
 using Discord.WebSocket;
 using Lavalink4NET;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,17 +53,34 @@ internal class DiscordClientHost : IHostedService {
     }
 
     private async Task ClientReady() {
+
         await _interactionService
             .AddModulesAsync(Assembly.GetExecutingAssembly(), _serviceProvider)
             .ConfigureAwait(false);
 
-        await _client.Rest.DeleteAllGlobalCommandsAsync();
 
-        //REGISTER COMMANDS HERE
-        await _interactionService
-            .RegisterCommandsGloballyAsync(true)
-            .ConfigureAwait(false);
+
+#if DEBUG
+        try {
+            await _interactionService
+                .RegisterCommandsToGuildAsync(1200874685047513198)
+                .ConfigureAwait(false);
+        }
+        catch(Exception ex) {
+            Console.WriteLine(ex.ToString());
+        }
+#else
+        try {
+            await _interactionService
+                .RegisterCommandsGloballyAsync(true)
+                .ConfigureAwait(false);
+        } catch (Exception ex) {
+            Console.WriteLine(ex.ToString());
+        }
+#endif
+
     }
+
 
     private string getToken() {
 #if DEBUG
