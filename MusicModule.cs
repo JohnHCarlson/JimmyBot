@@ -1,11 +1,13 @@
 ﻿namespace Jamie;
 
 using System;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
+using JamieBot;
 using Lavalink4NET;
 using Lavalink4NET.DiscordNet;
 using Lavalink4NET.Events.Players;
@@ -44,6 +46,10 @@ public class MusicModule : InteractionModuleBase<SocketInteractionContext> {
             return;
         }
 
+        if(ServerChannel.GetBotChannel(Context.Guild.Id) == 0) { //Server config channel has not been set
+            await FollowupAsync($"Please use the /SetChannel command to configure your bot channel before using the music module.").ConfigureAwait(false);
+            return;
+        }
 
         var track = await _audioService.Tracks //TODO search from other services (youtube music, shorts, spotify, soundcloud)
             .LoadTrackAsync(query, searchMode: Lavalink4NET.Rest.Entities.Tracks.TrackSearchMode.YouTube)
@@ -226,7 +232,7 @@ public class MusicModule : InteractionModuleBase<SocketInteractionContext> {
             var player = args.Player;
             var builder = GetControls();
 
-            var channel = await _client.GetChannelAsync(1188565886425112697).ConfigureAwait(false) as IMessageChannel;
+            var channel = await _client.GetChannelAsync(ServerChannel.GetBotChannel(player.GuildId)).ConfigureAwait(false) as IMessageChannel;
 
             var embed = new EmbedBuilder() {
                 Title = $"Currently playing: {track.Title}",
@@ -251,7 +257,7 @@ public class MusicModule : InteractionModuleBase<SocketInteractionContext> {
     internal async Task TrackEnded(object sender, TrackEndedEventArgs args) {
 
         try {
-            var channel = await _client.GetChannelAsync(1188565886425112697).ConfigureAwait(false) as IMessageChannel;
+            var channel = await _client.GetChannelAsync(ServerChannel.GetBotChannel(args.Player.GuildId)).ConfigureAwait(false) as IMessageChannel;
             await channel.DeleteMessageAsync(statusMessageId).ConfigureAwait(false);
         }
         catch(Exception ex) {
@@ -306,19 +312,6 @@ public class MusicModule : InteractionModuleBase<SocketInteractionContext> {
             return null;
         }
         return result.Player;
-    }
-
-    private async ValueTask<IChannel> GetChannel() {
-        ulong channel_id = 1188565886425112697;
-
-        try {
-            return await _client.GetChannelAsync(channel_id).ConfigureAwait(false) as IMessageChannel;
-        }
-        catch(Exception ex) {
-            Console.WriteLine($"Unable to find channel with ID: {channel_id}.");
-            Console.WriteLine(ex.Message);
-            return null;
-        }
     }
 }
 
