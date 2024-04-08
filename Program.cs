@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Net.Http.Json;
 using JamieBot;
+using Microsoft.Extensions.Configuration;
 
 public class Program {
 
@@ -21,24 +22,22 @@ public class Program {
 
         var builder = new HostApplicationBuilder(args);
 
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+        builder.Services.AddSingleton<IConfigurationRoot>(configuration);
+
         //Discord.net
         builder.Services.AddSingleton<DiscordSocketClient>();
         builder.Services.AddSingleton<InteractionService>();
         builder.Services.AddHostedService<DiscordClientHost>();
 
-        String passphrase = "youshallnotpass";
 
-#if DEBUG //uses default password if debug
-#else
-            try {
-            passphrase = File.ReadAllText("data/passphrase.txt");
 
-        } 
-        catch (Exception ex) {
-            Console.WriteLine("Unable to find passphrase at \"data/passphrase.txt\"");
-            Console.WriteLine(ex.Message);
-        }
-#endif
+
+        String passphrase = builder.Configuration.GetSection("Lavalink")["Passphrase"];
 
 
         //LavaLink4Net
