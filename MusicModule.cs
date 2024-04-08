@@ -65,6 +65,9 @@ public class MusicModule : InteractionModuleBase<SocketInteractionContext> {
         } else { //Otherwise, messagse that track is queued
             await FollowupAsync($"Adding {track.Title} to the queue", ephemeral: true).ConfigureAwait(false);
         }
+
+        await player.SetVolumeAsync(.25f).ConfigureAwait(false);
+
         await player.PlayAsync(track).ConfigureAwait(false);
     }
 
