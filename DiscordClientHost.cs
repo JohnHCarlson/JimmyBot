@@ -9,6 +9,7 @@ using Discord.Interactions;
 using Discord.Rest;
 using Discord.WebSocket;
 using Lavalink4NET;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -17,12 +18,14 @@ internal class DiscordClientHost : IHostedService {
     private readonly DiscordSocketClient _client;
     private readonly InteractionService _interactionService;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IConfiguration _configuration;
 
-    public DiscordClientHost(DiscordSocketClient client, InteractionService service, IServiceProvider serviceProvider) {
+    public DiscordClientHost(DiscordSocketClient client, InteractionService service, IServiceProvider serviceProvider, IConfigurationRoot configuration) {
 
         _client = client;
         _interactionService = service;
         _serviceProvider = serviceProvider;
+        _configuration = configuration;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken) {
@@ -63,7 +66,7 @@ internal class DiscordClientHost : IHostedService {
 #if DEBUG
         try {
             await _interactionService
-                .RegisterCommandsToGuildAsync(1200874685047513198)
+                .RegisterCommandsToGuildAsync(ulong.Parse(_configuration.GetSection("TestInfo")["Guild"]))
                 .ConfigureAwait(false);
         }
         catch(Exception ex) {
@@ -83,23 +86,7 @@ internal class DiscordClientHost : IHostedService {
 
 
     private string getToken() {
-#if DEBUG
-    try{
-        return File.ReadAllText("..\\..\\..\\token.txt");
-    }
-    catch(Exception ex) {
-        Console.WriteLine("Unable to find token at \"..\\..\\..\\token.txt\"");
-        Console.WriteLine(ex.Message);
-    }
-#else
-    try{
-         return File.ReadAllText("data/token.txt");
-    }
-    catch(Exception ex) {
-        Console.WriteLine("Unable to find token at \"..\\..\\..\\token.txt\"");
-        Console.WriteLine(ex.Message);
-    }   
-#endif
-        return "";
+
+        return _configuration.GetSection("Bot")["Token"];
     }
 }
