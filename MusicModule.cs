@@ -65,9 +65,7 @@ public class MusicModule : InteractionModuleBase<SocketInteractionContext> {
         } else { //Otherwise, messagse that track is queued
             await FollowupAsync($"Adding {track.Title} to the queue", ephemeral: true).ConfigureAwait(false);
         }
-
         await player.SetVolumeAsync(.25f).ConfigureAwait(false);
-
         await player.PlayAsync(track).ConfigureAwait(false);
     }
 
@@ -303,10 +301,14 @@ public class MusicModule : InteractionModuleBase<SocketInteractionContext> {
     private async ValueTask<QueuedLavalinkPlayer?> GetPlayerAsync(bool connectToVoice = true) {
 
         var retrieveOptions = new PlayerRetrieveOptions(ChannelBehavior: connectToVoice ? PlayerChannelBehavior.Join : PlayerChannelBehavior.None);
-        var result = await _audioService.Players
-            .RetrieveAsync(Context, playerFactory: PlayerFactory.Queued, retrieveOptions)
-            .ConfigureAwait(false);
+        
 
+        var lavalinkOptions = new QueuedLavalinkPlayerOptions() { 
+            SelfMute = true,
+        };
+
+        var result = await _audioService.Players.RetrieveAsync<QueuedLavalinkPlayer, QueuedLavalinkPlayerOptions>(Context, playerFactory: PlayerFactory.Queued, options: lavalinkOptions, retrieveOptions: retrieveOptions).ConfigureAwait(false);
+     
         if (!result.IsSuccess) {
             var errorMessage = result.Status switch {
                 PlayerRetrieveStatus.UserNotInVoiceChannel => "You are not connected to a voice channel.",
