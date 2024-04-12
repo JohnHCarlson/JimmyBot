@@ -24,6 +24,7 @@ namespace JamieBot {
             await FollowupAsync("pong", ephemeral: true).ConfigureAwait(false);
         }
 
+        [DefaultMemberPermissions(Discord.GuildPermission.Administrator)]
         [SlashCommand("set-channel", description: "Sets the bot channel for status messages.", runMode: RunMode.Async)]
         public async Task SetChannel(SocketChannel channel) {
 
