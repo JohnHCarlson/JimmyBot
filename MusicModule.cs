@@ -40,18 +40,18 @@ public class MusicModule : InteractionModuleBase<SocketInteractionContext> {
     public async Task Play(string query) {
 
         await DeferAsync(ephemeral: true).ConfigureAwait(false); //Defers response to show the bot is working on the command (accounts for delay in youtube search/resolution)
+
+        if (ServerChannel.GetBotChannel(Context.Guild.Id) == 0) { //Checks if the server config channel has been set, exits if not
+            await FollowupAsync($"Please use the /set-channel command to configure your bot channel before using the music module.").ConfigureAwait(false);
+            return;
+        }
         var player = await GetPlayerAsync(connectToVoice: true).ConfigureAwait(false); //Gets player, tells player to connect to voice if not already connected
 
         if (player == null) { //If player is null returns (error msg already sent in getplayer)
             return;
         }
 
-        if(ServerChannel.GetBotChannel(Context.Guild.Id) == 0) { //Server config channel has not been set
-            await FollowupAsync($"Please use the /SetChannel command to configure your bot channel before using the music module.").ConfigureAwait(false);
-            return;
-        }
-
-        var track = await _audioService.Tracks //TODO search from other services (youtube music, shorts, spotify, soundcloud)
+        var track = await _audioService.Tracks 
             .LoadTrackAsync(query, searchMode: Lavalink4NET.Rest.Entities.Tracks.TrackSearchMode.YouTube)
             .ConfigureAwait(false);
 
@@ -176,7 +176,7 @@ public class MusicModule : InteractionModuleBase<SocketInteractionContext> {
     public async Task LeaveComponent() {
 
         await DeferAsync(ephemeral: true).ConfigureAwait(false);
-        var player = await GetPlayerAsync(connectToVoice: true).ConfigureAwait(false);
+        var player = await GetPlayerAsync(connectToVoice: false).ConfigureAwait(false);
 
         await player.DisconnectAsync();
     }
@@ -191,7 +191,7 @@ public class MusicModule : InteractionModuleBase<SocketInteractionContext> {
 
         await DeferAsync(ephemeral: true).ConfigureAwait(false);
 
-        var player = await GetPlayerAsync(connectToVoice: true).ConfigureAwait(false);
+        var player = await GetPlayerAsync(connectToVoice: false).ConfigureAwait(false);
 
         List<String> tracks = new List<String>();
         ITrackQueue queue = player.Queue;
@@ -218,7 +218,7 @@ public class MusicModule : InteractionModuleBase<SocketInteractionContext> {
     public async Task ShuffleComponent() {
         await DeferAsync(ephemeral: true).ConfigureAwait(false);
 
-        var player = await GetPlayerAsync(connectToVoice: true).ConfigureAwait(false);
+        var player = await GetPlayerAsync(connectToVoice: false).ConfigureAwait(false);
 
         await FollowupAsync("Shuffling the queue", ephemeral: true).ConfigureAwait(false);
         await player.Queue.ShuffleAsync().ConfigureAwait(false);
