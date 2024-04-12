@@ -193,19 +193,22 @@ public class MusicModule : InteractionModuleBase<SocketInteractionContext> {
 
         var player = await GetPlayerAsync(connectToVoice: false).ConfigureAwait(false);
 
-        List<String> tracks = new List<String>();
+        List<String> tracks = new List<String>(); //Gets all queued songs
         ITrackQueue queue = player.Queue;
         StringBuilder queueMessage = new StringBuilder();
-
-        foreach (TrackQueueItem item in queue) {
+        foreach (TrackQueueItem item in queue) { 
             tracks.Add(item.Reference.Track.Title);
         }
 
-        queueMessage.AppendLine("Current queue:");
-        for (int i = 0; i < tracks.Count; i++) {
-            queueMessage.AppendLine($"{i + 1}: {tracks[i]}");
+        if(tracks.Count == 0) { //If queue is empty
+            queueMessage.AppendLine("The queue is currently empty.");
+        } 
+        else {
+            queueMessage.AppendLine($"Currently playing: {player.CurrentTrack.Title}"); //Notes current track
+            for (int i = 0; i < tracks.Count; i++) {
+                queueMessage.AppendLine($"{i + 1}: {tracks[i]}");
+            }
         }
-
         String message = queueMessage.ToString();
         await FollowupAsync(message, ephemeral: true).ConfigureAwait(false);
     }
