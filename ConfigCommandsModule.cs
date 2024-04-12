@@ -32,8 +32,7 @@ namespace JamieBot {
             ServerChannel newChannel = new ServerChannel(Context.Guild.Id, channel.Id);
             ServerChannel.Serialize(newChannel);
 
-            await FollowupAsync($"Set {channel.ToString()} as bot channel.");
-
+            await FollowupAsync($"Set #{channel.ToString()} as bot status channel.");
         }
     }
 
