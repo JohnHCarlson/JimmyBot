@@ -1,12 +1,12 @@
 # About
 
-## What is JamieBot?
+## What is JimmyBot?
 
-JamieBot is a custom discord bot that I wrote to add features and automate tasks for use in some small / local discord servers. Jamie contains (and is planned to contain even more) features that are possibly useful in the server you and your friends hang out in and also some features that are probably not useful for you.
+JimmyBot is a custom discord bot that I wrote to add features and automate tasks for use in some small / local discord servers. Jimmy contains (and is planned to contain even more) features that are possibly useful in the server you and your friends hang out in and also some features that are probably not useful for you.
 
-## Who is Jamie?
+## Who is Jimmy?
 
-Jamie is just a robot with a name that begins with J. Any references to other people name Jamie are purely coincidental and have no bearing on figures that exist outside of the internet. I reserve the right to rename Jamie to Justin, Jordan, James, Jasmine, ~~Jackson~~, Jameson, or Josephine at any time.
+Jimmy is just a robot with a name that begins with J. Any references to other people name Jimmy are purely coincidental and have no bearing on figures that exist outside of the internet. I reserve the right to rename Jimmy to Justin, Jordan, James, Jasmine, ~~Jackson~~, Jameson, or Josephine at any time.
 
 ## Features
 
@@ -14,7 +14,7 @@ The feature list below is broken down by modules, and further subdivided by comm
 
 ### Music Module
 
-The music module is Jamie's most used feature. The module currently supports searching and links of videos and songs from YouTube and links from other music streaming services such as Spotify, SoundCloud, and Twitch.
+The music module is Jimmy's most used feature. The module currently supports searching and links of videos and songs from YouTube and links from other music streaming services such as Spotify, SoundCloud, and Twitch.
 
 Commands include:
 
@@ -29,7 +29,7 @@ All commands except for `/play` can be used via buttons on the now playing displ
 
 ### Configuration Module
 
-The configuration module is a set of commands used to configure, test, and otherwise administer Jamie.
+The configuration module is a set of commands used to configure, test, and otherwise administer Jimmy.
 
 Commands include:
 
@@ -42,7 +42,7 @@ Commands include:
 
 ## Libraries / Dependencies
 
-Jamie requires the following libraries:
+Jimmy requires the following libraries:
 
 - [Discord.Net](https://docs.discordnet.dev/)
 - [Lavalink4Net](https://lavalink4net.angelobreuer.de/)
@@ -50,11 +50,11 @@ Jamie requires the following libraries:
 - Microsoft.Extensions.Configuration
 - Microsoft.Extensions.Http
 
-Jamie also requires communication with an active Lavalink server, see [here](https://github.com/lavalink-devs/Lavalink) for installation and configuration information.
+Jimmy also requires communication with an active Lavalink server, see [here](https://github.com/lavalink-devs/Lavalink) for installation and configuration information.
 
 ## Configuration
 
-Jamie requires a small amount of configuration before he is able to get up and running. Follow the basic instructions below and he should be all set.
+Jimmy requires a small amount of configuration before he is able to get up and running. Follow the basic instructions below and he should be all set.
 
 1. Configure your `appsettings.json` file. Make sure the file contains a `Bot` object as well as a `Lavalink` object, with a `Token` and `Passphrase` string (respectively). Populate these objects with your configuration data from your Lavalink server and bot.
 2. Make sure to run any configuration commands such as `/set-channel`. This command should create an additional configuration file required for the music bot to function correctly.
